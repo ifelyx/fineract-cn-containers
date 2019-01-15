@@ -139,10 +139,13 @@ function list-tenants {
 
 function assign-identity-ms {
     local tenant="$1"
+    echo "TOKEN--"
+    echo $TOKEN
 
     ADMIN_PASSWORD=$( curl -s -H "Content-Type: application/json" -H "User: wepemnefret" -H "Authorization: ${TOKEN}" \
 	--data '{ "name": "'"$IDENTITY_MS_NAME"'" }' \
 	${PROVISIONER_URL}/tenants/${tenant}/identityservice | jq --raw-output '.adminPassword')
+    echo $ADMIN_PASSWORD
     echo "Assigned identity microservice for tenant $tenant"
 }
 
@@ -289,6 +292,8 @@ create-microservice $DEPOSIT_MS_NAME $DEPOSIT_MS_DESCRIPTION $DEPOSIT_MS_VENDOR 
 create-microservice $TELLER_MS_NAME $TELLER_MS_DESCRIPTION $TELLER_MS_VENDOR $TELLER_URL
 create-microservice $REPORT_MS_NAME $REPORT_MS_DESCRIPTION $REPORT_MS_VENDOR $REPORT_URL
 
+TENANTS=("KUWEGO")
+
 for TENANT in "${TENANTS[@]}"; do
     echo
     echo
@@ -315,5 +320,5 @@ for TENANT in "${TENANTS[@]}"; do
     login ${TENANT} "antony" $ADMIN_PASSWORD
     create-org-admin-role ${TENANT}
     create-user ${TENANT} "antony" "operator" "init1@l23" "orgadmin"
-    login ${TENANT}" "operator" "init1@l"
+    login ${TENANT} "operator" "init1@l"
 done
